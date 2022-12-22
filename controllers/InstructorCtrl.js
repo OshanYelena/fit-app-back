@@ -3,6 +3,8 @@ const MealPlans = require("../models/MealModel");
 const Members = require("../models/MemberModel");
 const Exercies = require("../models/ExerciesModel");
 
+const Message = require("../models/MessagesModel");
+
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const sendMail = require("./sendMail");
@@ -305,7 +307,7 @@ const instructorCtrl = {
   updateRole: async (req, res) => {
     try {
       const { id, index } = req.body;
-      console.log(req.body)
+      console.log(req.body);
       const instructor = await Instructors.findById(id);
 
       if (instructor) {
@@ -313,10 +315,10 @@ const instructorCtrl = {
         if (verify.modifiedCount === 1) {
           return res.json({ msg: "Successfully updated as a Admin!" });
         } else {
-          throw new Error( { msg: "update Failed Instructor"});
+          throw new Error({ msg: "update Failed Instructor" });
         }
       } else {
-        throw new Error({msg: "Invalid Instructor"});
+        throw new Error({ msg: "Invalid Instructor" });
       }
     } catch (err) {
       console.log(err);
@@ -421,6 +423,74 @@ const instructorCtrl = {
       return res.status(500).json({ msg: err.message });
     }
   },
+
+  //Add members to a group
+  addMembersToGroup: async (req, res) => {
+    try {
+      const { group, email } = req.body;
+      console.log(req.body);
+      const member = await Members.findOne({ email: email });
+      if (!member) {
+        throw new Error("Invalid User Email");
+      }
+      const verify = await member.updateOne({ group: group });
+      if (verify.modifiedCount === 1) {
+        res.json({ msg: "Update Success!" });
+      } else {
+        throw new Error("Update Failed");
+      }
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json(err.message);
+    }
+  },
+
+  //Get Messages
+  getAllmessages: async (req, res) => {
+    try {
+      const messages = await Message.find();
+      if (messages == {}) {
+        return res.status(500).json({ msg: "No Messsages" });
+      }
+      res.json(messages);
+    } catch (err) {
+      return res.status(500).json({ msg: err.message });
+    }
+  },
+    //Add message
+    addMessage: async (req, res) => {
+      try {
+        const { sender, msgBody } = req.body;
+
+        let today = new Date();
+
+        let year = today.getFullYear();
+        let month = today.getMonth() + 1;
+        let datetoday = today.getDate();
+
+        let date = `${datetoday}/${month}/${year}`;
+
+        let hours = today.getHours();
+        let minutes = today.getMinutes();
+
+        let time = `${hours}.${minutes}`;
+
+        if (!msgBody || !date || !time)
+          return res.status(400).json({ msg: "Please fill in all fields." });
+
+        const newMessage = new Message({
+          sender,
+          msgBody,
+          time,
+          date,
+        });
+        await newMessage.save();
+        res.json({ msg: "New message has been added" });
+      } catch (err) {
+        console.log(err)
+        return res.status(500).json({ msg: err.message });
+      }
+  }
 };
 
 const validateEmail = (email) => {

@@ -16,6 +16,9 @@ router.get('/workout',  memberCtrl.getAllworkouts)
 
 router.post('/forgotpw', memberCtrl.forgotPW)
 
+router.get('/allmember_info', memberCtrl.getAllMembers)
+
+
 router.post('/resetpw', authM, memberCtrl.resetPW)
 
 router.get('/info', authM, memberCtrl.getMemberInfo)

@@ -250,6 +250,20 @@ const memberCtrl = {
     }
   },
 
+  getAllMembers: async (req, res) => {
+    try {
+      //console.log(req.instructor)
+      const members = await Members.find().select("-Password");
+      res.json(members);
+    } catch (err) {
+      return res.status(500).json({ msg: err.message });
+    }
+  },
+
+
+
+
+
   //Member Logout (S)
   logout: async (req, res) => {
     try {
@@ -344,6 +358,9 @@ getAllworkouts: async (req, res) => {
       return res.status(500).json({msg: err.message})
   }
 },
+
+
+
 
 
 
