@@ -37,6 +37,10 @@ const memberSchema = new mongoose.Schema({
         required: [true, "Please enter your height in cm"],
         trim: true 
     },
+    group: {
+        type: String,
+        trim: true   
+    },
     weight: {
         type: String,
         required: [true, "Please enter your weight in kg"],

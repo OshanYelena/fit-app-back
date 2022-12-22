@@ -85,6 +85,10 @@ const memberCtrl = {
     }
   },
 
+
+
+  
+
   //Member Activation (S)
   activateEmail: async (req, res) => {
     try {
